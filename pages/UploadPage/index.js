@@ -1,7 +1,8 @@
+import * as ImagePicker from 'expo-image-picker';
+import { getDatabase, ref, set } from 'firebase/database';
 import { useEffect, useState } from "react";
-import { Image, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity } from "react-native";
+import { Image, SafeAreaView, StatusBar, Text, TouchableOpacity } from "react-native";
 import { firebase } from '../../config/firebase.config';
-import * as ImagePicker from 'expo-image-picker'; 
 import { styles } from "./styles";
 
 async function uploadImage(image){
@@ -13,9 +14,19 @@ async function uploadImage(image){
         xhr.open('GET',image,true);
         xhr.send(null);
     });
-    const ref = firebase.storage().ref().child('images/test1');
-    const snapshot = await ref.put(blob);
+    const reference = firebase.storage().ref().child('images/test1');
+    const snapshot = await reference.put(blob);
+    const urlImage = await reference.getDownloadURL(); 
+    saveImageInDB(urlImage);
     blob.close();
+}
+
+function saveImageInDB(urlImage){
+    const db = getDatabase();
+    const reference = ref(db,'images');
+    set(reference,{
+        pathImage:urlImage
+    })
 }
 
 export function UploadPage({navigation}){
