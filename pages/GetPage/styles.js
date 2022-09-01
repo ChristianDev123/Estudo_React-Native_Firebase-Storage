@@ -7,10 +7,13 @@ export const styles = StyleSheet.create({
         justifyContent:'center'
     },
     imageWrapper:{
-
+        alignItems:'center',
     },
     image:{
         width:300,
         height:300
+    },
+    description:{
+        fontSize:25,
     }
 });

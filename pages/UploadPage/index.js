@@ -14,17 +14,22 @@ async function uploadImage(image){
         xhr.open('GET',image,true);
         xhr.send(null);
     });
-    const reference = firebase.storage().ref().child('images/test1');
+    const nameUser = "ChrisTest";
+    const timestamp = new Date().getTime();
+    const nameImage = `${nameUser}/${timestamp}` //padrão: nomeUsuario_data(Timestamp)
+    const pathImage = `images/${nameImage}`;
+    const reference = firebase.storage().ref().child(pathImage);
     const snapshot = await reference.put(blob);
     const urlImage = await reference.getDownloadURL(); 
-    saveImageInDB(urlImage);
+    saveImageInDB(urlImage, pathImage, 'tenis');
     blob.close();
 }
 
-function saveImageInDB(urlImage){
+function saveImageInDB(urlImage, pathImage, description){
     const db = getDatabase();
-    const reference = ref(db,'images');
+    const reference = ref(db, pathImage);
     set(reference,{
+        name:description,
         pathImage:urlImage
     })
 }
